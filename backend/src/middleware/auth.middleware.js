@@ -1,14 +1,13 @@
 import jwt from "jsonwebtoken";
 import { db } from "../libs/db.js";
+import { ApiError } from "../utils/api-error.js";
 
 export const authMiddleware = async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
 
     if (!token) {
-      return res.status(401).json({
-        message: "Unauthorized - No token provided",
-      });
+      throw new ApiError(401, "Unauthorized request");
     }
 
     let decoded;
@@ -35,7 +34,7 @@ export const authMiddleware = async (req, res, next) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw new ApiError(401, "User not found");
     }
 
     req.user = user;
