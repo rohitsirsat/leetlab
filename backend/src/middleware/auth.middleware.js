@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
 import { db } from "../libs/db.js";
 import { ApiError } from "../utils/api-error.js";
+import { asyncHandler } from "../utils/async-handler.js";
+import { ApiResponse } from "../utils/api-response.js";
 
-export const authMiddleware = async (req, res, next) => {
+export const authMiddleware = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies.jwt;
 
@@ -43,4 +45,26 @@ export const authMiddleware = async (req, res, next) => {
     console.error("Error authenticating user:", error);
     res.status(500).json({ message: "Error authenticating user" });
   }
-};
+});
+
+export const checkAdmin = asyncHandler(async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await db.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        role: true,
+      },
+    });
+
+    if (!user || user.role !== "ADMIN") {
+      throw new ApiError(403, "Forbidden - You are not an admin");
+    }
+    next();
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+  }
+});
