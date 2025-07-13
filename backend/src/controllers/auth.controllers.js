@@ -91,15 +91,19 @@ const login = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("jwt", token, options)
     .json(
-      new ApiResponse(200, {
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          image: user.image,
+      new ApiResponse(
+        200,
+        {
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            image: user.image,
+          },
         },
-      }),
+        "User logged in successfully",
+      ),
     );
 });
 
