@@ -19,7 +19,7 @@ import authRoutes from "./routes/auth.routes.js";
 import problemsRoutes from "./routes/problems.routes.js";
 
 app.use("/api/v1/auth", authRoutes);
-app.use("api/v1/problems", problemsRoutes);
+app.use("/api/v1/problems", problemsRoutes);
 
 app.listen(port, () => {
   console.log("Server is runnign on port: ", port);
